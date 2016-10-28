@@ -1,0 +1,215 @@
+#MySQL 5.7
+
+[client]
+#user=mysql
+#password=
+#host=172.0.0.1
+
+port = 3306
+socket = /home/mysql/mysqld.sock
+
+[mysql]
+user=mysql
+port = 3306
+socket = /home/mysql/mysqld.sock
+prompt="\u@\h [\d]> "
+no-auto-rehash
+
+[mysqld]
+
+core-file
+port = 3306
+socket = /home/mysql/mysqld.sock
+bind-address = 127.0.0.1
+server-id = 531
+#pid-file = /home/mysql/data/mysqld.pid
+
+skip-name-resolve 
+
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+explicit_defaults_for_timestamp = 1
+
+#时区设置
+default-time-zone ='+8:00'
+
+#最大连接数设置为500~1000应该比较合适
+max_connections = 80
+max_connect_errors = 100000
+
+#percona线程池
+thread_handling=pool-of-threads
+#thread_pool_max_threads = 500
+#thread_pool_oversubscribe =10
+
+table_open_cache = 2000
+max_allowed_packet = 128M
+tmp_table_size = 64M
+max_heap_table_size = 64M
+max_length_for_sort_data = 16k
+
+interactive_timeout = 1800
+wait_timeout = 1800
+
+read_buffer_size = 128M
+sort_buffer_size = 64M
+join_buffer_size = 128M
+read_rnd_buffer_size = 4M
+thread_stack = 256K
+
+max_connections = 800
+max_connect_errors = 100000
+
+query_cache_type = OFF
+query_cache_size = 0
+
+sql_mode = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER"
+
+basedir = /usr/
+datadir = /home/mysql/data
+tmpdir = /home/mysql/tmp
+slave_load_tmpdir = /home/mysql/tmp
+
+slow_query_log = 1
+log-error = /home/mysql/error.log
+slow_query_log_file = /home/mysql/slow.log
+long_query_time = 0.3 #1秒如果太大，后面可以优化到300ms
+log_queries_not_using_indexes = 1
+log_slow_admin_statements = 1
+log_slow_slave_statements = 1
+log_throttle_queries_not_using_indexes = 10
+min_examined_row_limit = 100
+
+########replication settings########
+master_info_repository = TABLE
+relay_log_info_repository = TABLE
+
+#gtid_mode = on
+#enforce_gtid_consistency = 1
+#binlog_gtid_simple_recovery = 1
+
+log-bin = /home/mysql/binlog/binlog
+sync_binlog = 1
+expire_logs_days = 10
+max_binlog_size = 128M
+max_binlog_cache_size = 128M
+binlog_cache_size = 8M
+log_bin_trust_function_creators = 1
+binlog_format = ROW
+log-slave-updates
+slave-net-timeout = 1200
+relay_log_recovery = 1
+relay-log = /home/mysql/relaylog/relaylog
+relay-log-index = /home/mysql/relaylog/relaylog.index
+master-info-file = /home/mysql/master.info
+relay-log-info-file = /home/mysql/relay-log.info
+slave_skip_errors = ddl_exist_errors
+
+binlog-ignore-db = information_schema
+binlog-ignore-db = mysql
+binlog-ignore-db = performance_schema
+binlog-ignore-db = test
+
+replicate-ignore-db = information_schema
+replicate-ignore-db = mysql
+replicate-ignore-db = performance_schema
+replicate-ignore-db = test
+
+
+
+########innodb settings########
+#隔离级别,默认是RR，建议RC
+transaction-isolation = READ-COMMITTED
+default-storage-engine = INNODB
+#页大小MySQL5.6版本后可设置,已有数据不能修改，可选项4K/8K/16K，
+#对SSD而言更小存储更高效，典型SSD都使用小的block
+#让页大小与存储设备的Block尺寸一致能最小化数据重写代价
+innodb_page_size = 8K
+#严格模式会将一些warning级别的问题当成error处置，默认关闭
+innodb_strict_mode = 1
+
+#大页设置需要配合系统配置进行
+large-pages
+#IO系统的参数优化,假设物理内存100G,设置50~80%较合适
+innodb_buffer_pool_size = 128M
+innodb_buffer_pool_instances = 1
+#innodb_buffer_pool_load_at_startup = 1
+#innodb_buffer_pool_dump_at_shutdown = 1
+#fusion io适合20k~40k,SSD 4k~8k,HDD 200~300
+innodb_io_capacity = 4000 
+innodb_io_capacity_max = 8000
+innodb_lru_scan_depth = 2000
+#innodb_flush_method = O_DIRECT
+innodb_use_native_aio = 1
+#mysql-5.6版本才有意义，且对SSD而言应该关闭设置为0
+innodb_flush_neighbors = 0#姜承尧推荐设置是1，区别不大
+#innodb事务等待行锁超时时间，一旦超时就放弃回滚，默认是50s
+innodb_lock_wait_timeout = 5
+innodb_log_group_home_dir = /home/mysql/redolog/
+innodb_undo_directory = /home/mysql/
+innodb_undo_logs = 128
+innodb_undo_tablespaces = 3
+#尽量设置大一些innodb_log_files_in_group*innodb_log_file_size
+#在55版本不能超过4G，56版本不能超过255G
+innodb_log_file_size = 256M
+innodb_log_files_in_group = 4
+#增加这个值主要是为了支持大事务，写特别多行会有大量日志，默认8M，不建议写大量行的大事务存在
+innodb_log_buffer_size = 16M
+#percona default size of 512 bytes is good in most situations
+#setting it to 4096 may be a good optimization with SSD cards.
+#innodb_log_block_size = 4092
+innodb_purge_threads = 4
+#建议值是CPU核数的两倍减去磁盘数2*16-2
+innodb_thread_concurrency = 64
+innodb_print_all_deadlocks = 1
+innodb_strict_mode = 1
+innodb_sort_buffer_size = 64M 
+#建议使用默认值
+innodb_max_dirty_pages_pct = 75
+innodb_autoinc_lock_mode = 2
+#存储表定义以及其他内部数据结构用的内存池，如果不够用会从OS申请并写入error日志，默认8M
+#5.7废除 innodb_additional_mem_pool_size = 64M
+#全表扫描被加入到老数据块需要超时时间，单位为毫秒，
+innodb_old_blocks_time = 1000
+innodb_adaptive_flushing = true
+innodb_change_buffering = inserts
+#取值范围1~64，默认值是4，读写线程默认值都是4，依赖业务读写比
+innodb_read_io_threads = 16
+innodb_write_io_threads = 4
+#默认值，修改无效
+#innodb_file_io_threads = 4
+innodb_file_per_table = 1
+innodb_data_home_dir = /home/mysql
+innodb_data_file_path = ibdata1:1G;ibdata2:1G;ibdata3:1G:autoextend:max:3G
+innodb_log_group_home_dir = /home/mysql
+#一次操作能打开.ibd文件个数的最大值，最小值是10,默认300，默认值应该够用了
+innodb_open_files = 300
+#这个对数据一致性要求高的应用一定要设置为1，要求不高的可以设置为2，尽量不要设置为0
+innodb_flush_log_at_trx_commit = 2
+#索引搜索和扫描时是否加间隙锁，不加会导致幻读
+innodb_locks_unsafe_for_binlog = 0
+#需要加锁的统计信息更新就不做
+innodb_stats_on_metadata = 0
+
+
+
+########semi sync replication settings########
+#plugin_dir =/usr/local/mysql/lib/plugin
+#plugin_load = "rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+#loose_rpl_semi_sync_master_enabled = 1
+#loose_rpl_semi_sync_slave_enabled = 1
+#loose_rpl_semi_sync_master_timeout = 5000
+
+
+
+####[mysqld-5.7]
+innodb_buffer_pool_dump_pct = 40
+innodb_page_cleaners = 4
+innodb_undo_log_truncate = 1
+innodb_max_undo_log_size = 128M
+#innodb_purge_rseg_truncate_frequency = 128
+#binlog_gtid_simple_recovery =1
+log_timestamps =system
+transaction_write_set_extraction =MURMUR32
+show_compatibility_56 =on
+
