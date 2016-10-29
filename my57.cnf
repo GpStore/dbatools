@@ -53,11 +53,12 @@ wait_timeout = 1800
 
 read_buffer_size = 128M
 sort_buffer_size = 64M
-join_buffer_size = 128M
+join_buffer_size = 3M
 read_rnd_buffer_size = 4M
 thread_stack = 256K
 
-max_connections = 800
+#max_used_connections应该是最大连接数的10%左右，如果不到就减小max_connections
+max_connections = 80
 max_connect_errors = 100000
 
 query_cache_type = OFF
