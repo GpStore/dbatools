@@ -42,7 +42,9 @@ thread_handling=pool-of-threads
 #thread_pool_max_threads = 500
 #thread_pool_oversubscribe =10
 
-table_open_cache = 2000
+#与当前数据库中有多少张表有关，不多于总表数
+table_open_cache = 200
+#传输数据量有关
 max_allowed_packet = 128M
 tmp_table_size = 64M
 max_heap_table_size = 64M
@@ -51,8 +53,13 @@ max_length_for_sort_data = 16k
 interactive_timeout = 1800
 wait_timeout = 1800
 
-read_buffer_size = 128M
-sort_buffer_size = 64M
+#MYISAM 索引缓存占用内存
+key_buffer_size = 4M
+#读取内容缓存
+read_buffer_size = 16M
+#排序用缓存
+sort_buffer_size = 32M
+#JOIN操作用缓存
 join_buffer_size = 3M
 read_rnd_buffer_size = 4M
 thread_stack = 256K
@@ -131,9 +138,11 @@ innodb_strict_mode = 1
 
 #大页设置需要配合系统配置进行
 large-pages
-#IO系统的参数优化,假设物理内存100G,设置50~80%较合适
+#IO系统的参数优化,假设物理内存的50~75%较合适，5.7版本可动态调整
 innodb_buffer_pool_size = 128M
+#大内存情况下（超过10G），可划分为多个bp分区
 innodb_buffer_pool_instances = 1
+#bp设置的太小会导致页频繁载入换出，太大可能导致swapping
 #innodb_buffer_pool_load_at_startup = 1
 #innodb_buffer_pool_dump_at_shutdown = 1
 #fusion io适合20k~40k,SSD 4k~8k,HDD 200~300
