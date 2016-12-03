@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+#
+BACKUP_DIR='DIR_IN_BACKUPCENTER';
+find $BACKUP_DIR -mtime +7 -type f -name '*.mime.log' -exec rm -f {} \;
+find $BACKUP_DIR -mtime +7 -type f -name '*.xbstream' -exec rm -f {} \;
+
+mysqlpass="";
+backpass="";
+remoteip="";
+
+#todo 
+#localip=`ifconfig |grep 'inet' |grep -v '127.0.0,1' |cut -d: -f2 |awk '{print $2}'`
+localip="";
+localport="3306";
+
+/usr/bin/expect /home/mysql/server/mysql/backup/db_fullbackup_daily.exp $mysqlpass $pass @remoteip $localip $localport
+

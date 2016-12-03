@@ -1,0 +1,26 @@
+#!/usr/bin/expect
+
+set timeout -1
+set mysqlpass [lindex $argv 0]
+set pass [lindex $argv 1]
+set ip [lindex $argv 2]
+set local [lindex $argv 3]
+set port [lindex $argv 4]
+
+set mycnf /home/mysql/server/my${port}.cnf
+set user dailybackup
+set backup_dir /home/mysql/server/db_backs
+set tmp [exec date "+%Y%m%d"]
+
+spawn -noecho bash -c " innobackupex  --defaults-file=$mycnf  --safe-slave-backup --slave-info --no-lock --user=$user --password=$pass  --use-memory=2G --stream=xbstream --compress --compress-threads=8 --parallel=4 $backup_dir/tmp  2>$backup_dir/$tmp.$local.mime.log | ssh admin@$ip 'cat -> $backup_dir/$tmp.$local.xbstream' "
+expect {
+    "(yes/no)?" {
+        send "yes\r";
+        exp_continue    
+    }
+    "password:" {
+        send "$mysqlpass\r"
+    }
+}
+expech eof
+
