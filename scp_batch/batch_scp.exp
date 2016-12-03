@@ -1,0 +1,16 @@
+#!/usr/bin/expect -f
+set ip [lindex $argv 0]
+set mysqlpass [lindex $argv 1]
+
+spawn scp /home/mysql/dba.tar.gz mysql@$ip:/home/mysql/
+expect {
+    "(yes/no)?" {
+        send "yes\r";
+        exp_continue
+    }
+    "password:" {
+        send "$mysqlpass\r"
+    }
+}
+expect "100%"
+expect eof
