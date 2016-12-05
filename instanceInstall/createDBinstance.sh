@@ -18,17 +18,17 @@ port=$7;
 sh /home/$user/dba/yum_install.sh
 
 mkdir /home/$user/dba/cnf
-cp /home/admin/dba/my3306_${disk}.cnf /home/${user}/dba/cnf/my${port}_${disk}.cnf
-sed -i "s#3306#$port#g" /home/${user}/dba/cnf/my${port}_${disk}.cnf
-sed -i "s#ip%#$ip#g" /home/${user}/dba/cnf/my${port}_${disk}.cnf
-sed -i "s#sid%#$sid#g" /home/${user}/dba/cnf/my${port}_${disk}.cnf
+cp /home/admin/dba/my3306_${disk}.cnf /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf
+sed -i "s#3306#$port#g" /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf
+sed -i "s#ip%#$ip#g" /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf
+sed -i "s#sid%#$sid#g" /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf
 
-cat /home/${user}/dba/cnf/my${port}_${disk}.cnf |grep bind
-cat /home/${user}/dba/cnf/my${port}_${disk}.cnf |grep server-id
+cat /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf |grep bind
+cat /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf |grep server-id
 sleep 5;
 
-cp /home/${user}/dba/cnf/my${port}_${disk}.cnf /home/${user}/server/my${port}.cnf
-sh /home/${user}/dba/buildServer.sh  $user $disk $dir $port 
+cp /home/${user}/dba/instanceInstall/cnf/my${port}_${disk}.cnf /home/${user}/server/my${port}.cnf
+sh /home/${user}/dba/instanceInstall/buildServer.sh  $user $disk $dir $port 
 sleep 5;
 
 /home/${user}/server/mysql/bin/mysql -S /tmp/mysql{port}/mysqld.sock -uroot -e "set password=PASSWORD('root123');"

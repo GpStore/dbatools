@@ -15,7 +15,7 @@ port=$3
 mkdir -p /home/$user/server/db_logs/mysql$port
 mkdir -p $dir//mysql/data$port
 
-cd  /data/mysql/data$port
+cd  $dir/mysql/data$port
 mkdir -p {binlog,relaylog,data,tmp,backup}
 touch  binlog/binlog.index
 chmod -R 760 binlog

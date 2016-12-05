@@ -16,7 +16,7 @@ port=$4;
 mkdir -p /home/$user/server/{db_srcs,db_backs,db_logs};
 
 #安装percona依赖包，含备份恢复
-cd  /home/$user/dba/rpm/perco57_boost159.tar.gz  /home/$user/server/db_srcs;
+cd  /home/$user/dba/instanceInstall/rpm/perco57_boost159.tar.gz  /home/$user/server/db_srcs;
 
 sudo yum install perl-DBD-MySQL-4.023-5.el7.x86_64
 sudo rpm -Uvh libev-4.03-3.el6.x86_64.rpm
@@ -33,16 +33,16 @@ make install
 
 #sleep 2;
 # init mysql need dirs and files
-cp -fr /home/$user/dba/backup /home/$user/server/mysql
-cp -fr /home/$user/dba/mha /home/$user/server/mysql
-cp -fr /home/$user/dba/initDirs.sh /home/$user/server/mysql
+cp -fr /home/$user/dba/instanceInstall/backup /home/$user/server/mysql
+cp -fr /home/$user/dba/instanceInstall/mha /home/$user/server/mysql
+cp -fr /home/$user/dba/instanceInstall/initDirs.sh /home/$user/server/mysql
 
 
 sudo sh ~/server/mysql/initDirs.sh  $user $dir $port 
 
 
 #init mysqld with my.cnf and get error file of root passwd
-#done thie in createdbinstance.sh   cp  /home/$user/dba/my${port}_${disk}.cnf /home/$user/server/my$port{}.cnf
+#done thie in createdbinstance.sh   cp  /home/$user/dba/instanceInstall/my${port}_${disk}.cnf /home/$user/server/my$port{}.cnf
 
 
 rm -fr /home/$user/server/db_logs/mysql${port}/error.log

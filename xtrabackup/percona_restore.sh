@@ -1,10 +1,11 @@
 
 #!/bin/bash
+sudo cp qpress /usr/bin
 #echo $#
 if [ "$#" != 3 ];
 then
         echo "需要传入两个参数:备份文件所在目录，my.cnf绝对路径, 恢复文件夹[my.cnf中datadir绝对路径],实际只有 $# 个参数,"
-        echo "正确格式如./decompress.sh /data/backup/t.xbstream /home/gp/my.cnf  /data/mysql/data"
+        echo "正确格式如./percona_restore.sh /home/mysql/server/db_backs/t.xbstream /home/mysql/server/my3306.cnf  /data/mysql/data3306/data"
 fi
 DIR_BACKUP=$1;
 DIR_MYCNF=$2;
@@ -59,13 +60,13 @@ touch slow.log
 chmod a+r slow.log
 chmod 664 *.log
 chmod 660 ib*
-chown -R mysql:mysql $repath
+chown -R admin:admin $repath
 
 #innobackupex --defaults-file=$DIR_MYCNF  --copy-back $DIR_RESTORE
 ## 启动MySQL服务程序
-mysqld_safe --defaults-file=$DIR_MYCNF --skip-name-resolve --read-only=1 -umysql&
+#mysqld_safe --defaults-file=$DIR_MYCNF --skip-name-resolve --read-only=1 -umysql&
 
 ## 挂载复制起始文件与位置点
-## mysql -e "stop slave; change master to MASTER_HOST='127.0.0.1', MASTER_PORT=3306, MASTER_USER='repl', MASTER_PASSWORD='repl123', MASTER_LOG_FILE='binlog.000003', MASTER_LOG_POS=745; "
+##mysql -e "stop slave; change master to MASTER_HOST='10.11.12.13', MASTER_PORT=3306, MASTER_USER='repl', MASTER_PASSWORD='repl123', MASTER_LOG_FILE='binlog.000004', MASTER_LOG_POS=12397601;"
 ## 恢复成功
 ## mysql -e "start slave ; show slave status\G";

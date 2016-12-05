@@ -1,0 +1,9 @@
+[mysql]
+
+port=3306
+#socket=
+
+user=zabbix
+password=zabbixpassword
+
+
